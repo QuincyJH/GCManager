@@ -1,0 +1,88 @@
+package com.global.gcmanager.service;
+
+import com.global.gcmanager.dao.GameDAO;
+import com.global.gcmanager.model.Directory;
+import com.global.gcmanager.model.Game;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+
+@Service(value = "GCMService")
+@Transactional
+public class GCMServiceImpl implements GCMService{
+
+    @Autowired
+    private GameDAO gameDAO;
+
+    public Directory processNewDirectory(String folder) throws IOException {
+        Directory dir = new Directory();
+        dir.setDirectory(folder);
+        File[] files = findFiles(dir.getDirectory());
+        List<Game> games = this.processGames(files);
+        dir.setGames(games);
+        return dir;
+    }
+
+    public File[] findFiles(String dirName){
+        File directory = new File(dirName);
+        return directory.listFiles(new FilenameFilter(){
+            public boolean accept(File directory, String filename){
+                return filename.matches(".*\\.(?i)(iso|gcm)$");
+            }
+        });
+    }
+
+    public List<Game> processGames(File[] files) throws IOException {
+        List<Game> games = new ArrayList<>();
+        for (int i = 0; i < files.length; i++) {
+            byte[] buffer = new byte[96];
+            InputStream is = new FileInputStream(files[i]);
+            if(is.read(buffer) != buffer.length){
+
+            }
+            //System.out.println("BYTE 1: " + (char) buffer[0] + "\nBYTE 2: " + (char) buffer[1] + "\nBYTE 3: " + (char) buffer[2] +
+            //        "\nBYTE 4: " + (char) buffer[3] + "\nBYTE 5: " + (char) buffer[4] + "\nBYTE 6: " + (char) buffer[5]);
+            String idName = byteToString(buffer);
+            //System.out.println(idName);
+            Game game = new Game(files[i].getName(), idName.substring(0,6), idName.substring(32).trim());
+            //System.out.println(game.getGameID());
+            //System.out.println(game.getGameName());
+            games.add(game);
+            is.close();
+
+
+        }
+        return games;
+    }
+    
+    public String byteToString(byte[] bytes){
+        String idName = "";
+        char[] chars = new char[96];
+        for (int i = 0; i < bytes.length; i++) {
+            chars[i] = (char) bytes[i];
+        }
+        idName = String.valueOf(chars);
+        return idName;
+    }
+
+    public String addNewGame(Game game) throws Exception{
+        String gameID = gameDAO.addNewGame(game);
+        return gameID;
+    }
+
+    public int addGameList(List<Game> games) throws Exception{
+        for(Game game : games){
+            String name = addNewGame(game);
+        }
+        return games.size();
+    }
+
+    public List<Game> getAllGames(){
+        return gameDAO.getAllGames();
+    }
+
+}
