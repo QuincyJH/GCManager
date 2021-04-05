@@ -5,7 +5,6 @@ import com.global.gcmanager.model.Directory;
 import com.global.gcmanager.model.Game;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import javax.transaction.Transactional;
 import java.io.*;
 import java.util.ArrayList;
@@ -44,13 +43,8 @@ public class GCMServiceImpl implements GCMService{
             if(is.read(buffer) != buffer.length){
 
             }
-            //System.out.println("BYTE 1: " + (char) buffer[0] + "\nBYTE 2: " + (char) buffer[1] + "\nBYTE 3: " + (char) buffer[2] +
-            //        "\nBYTE 4: " + (char) buffer[3] + "\nBYTE 5: " + (char) buffer[4] + "\nBYTE 6: " + (char) buffer[5]);
             String idName = byteToString(buffer);
-            //System.out.println(idName);
             Game game = new Game(files[i].getName(), idName.substring(0,6), idName.substring(32).trim());
-            //System.out.println(game.getGameID());
-            //System.out.println(game.getGameName());
             games.add(game);
             is.close();
 

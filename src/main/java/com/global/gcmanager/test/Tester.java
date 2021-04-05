@@ -1,13 +1,6 @@
 package com.global.gcmanager.test;
 
-import com.global.gcmanager.model.Directory;
-import com.global.gcmanager.service.GCMService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import java.io.IOException;
 import java.sql.*;
-
 
 public class Tester {
 

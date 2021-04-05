@@ -15,9 +15,6 @@ import java.util.List;
 @Transactional
 public class GameDAOImpl implements GameDAO {
 
-    //@PersistenceContext
-    //EntityManager em;
-
     EntityManagerFactory emf;
 
     @Override
@@ -25,14 +22,12 @@ public class GameDAOImpl implements GameDAO {
         this.startEntityManager();
         EntityManager em = this.emf.createEntityManager();
 
-
         System.out.println("TEST 1");
         GameEntity newGame = new GameEntity();
 
         newGame.setFileName(game.getFileName());
         newGame.setGameID(game.getGameID());
         newGame.setGameName(game.getGameName());
-
 
         em.getTransaction().begin();
         em.persist(newGame);
@@ -70,7 +65,6 @@ public class GameDAOImpl implements GameDAO {
 
     public void startEntityManager(){
         this.emf = Persistence.createEntityManagerFactory("persistence");
-        //return em;
     }
 
     public void closeEntityManager(EntityManager em){
