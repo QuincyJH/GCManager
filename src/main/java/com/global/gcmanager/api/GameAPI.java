@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
-@CrossOrigin
+@CrossOrigin(exposedHeaders="Access-Control-Allow-Origin")
 @RestController
 @RequestMapping("GameAPI")
 public class GameAPI {
