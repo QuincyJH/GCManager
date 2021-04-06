@@ -22,7 +22,7 @@ public class GameDAOImpl implements GameDAO {
         this.startEntityManager();
         EntityManager em = this.emf.createEntityManager();
 
-        System.out.println("TEST 1");
+        //System.out.println("TEST 1");
         GameEntity newGame = new GameEntity();
 
         newGame.setFileName(game.getFileName());
@@ -35,6 +35,36 @@ public class GameDAOImpl implements GameDAO {
 
         this.closeEntityManager(em);
         return newGame.getGameID();
+    }
+
+    @Override
+    public List<Game> addMultipleGames(List<Game> games){
+        this.startEntityManager();
+        EntityManager em = this.emf.createEntityManager();
+
+        System.out.println(games.size());
+        for (int i = 0; i < games.size(); i++) {
+            System.out.println(i);
+            if(!em.contains(games.get(i))){
+                System.out.println("test");
+                GameEntity newGame = new GameEntity();
+
+                newGame.setFileName(games.get(i).getFileName());
+                newGame.setGameID(games.get(i).getGameID());
+                newGame.setGameName(games.get(i).getGameName());
+
+                em.getTransaction().begin();
+                em.persist(newGame);
+            }else{
+                System.out.println("already exists");
+            }
+
+        }
+
+        em.getTransaction().commit();
+
+        this.closeEntityManager(em);
+        return this.getAllGames();
     }
 
     @Override
@@ -62,6 +92,38 @@ public class GameDAOImpl implements GameDAO {
         return Games;
     }
 
+    @Override
+    public String removeGame(Game game){
+        this.startEntityManager();
+        EntityManager em = this.emf.createEntityManager();
+
+        GameEntity gameEntityToRemove = null;
+        gameEntityToRemove.setGameName(game.getGameName());
+        gameEntityToRemove.setGameID(game.getGameID());
+        gameEntityToRemove.setFileName(game.getFileName());
+
+        em.remove(gameEntityToRemove);
+        this.closeEntityManager(em);
+        return game.getGameName();
+    }
+
+    @Override
+    public String removeMultipleGames(List<Game> games){
+        this.startEntityManager();
+        EntityManager em = this.emf.createEntityManager();
+
+        GameEntity gameEntityToRemove = null;
+
+        for (int i = 0; i < games.size(); i++) {
+            gameEntityToRemove.setGameName(games.get(i).getGameName());
+            gameEntityToRemove.setGameID(games.get(i).getGameID());
+            gameEntityToRemove.setFileName(games.get(i).getFileName());
+
+            em.remove(gameEntityToRemove);
+        }
+        this.closeEntityManager(em);
+        return games.get(0).getGameID();
+    }
 
     public void startEntityManager(){
         this.emf = Persistence.createEntityManagerFactory("persistence");
@@ -71,5 +133,7 @@ public class GameDAOImpl implements GameDAO {
         em.close();
         emf.close();
     }
+
+
 
 }

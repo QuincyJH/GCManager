@@ -11,6 +11,8 @@ public interface GCMService {
 
     public Directory processNewDirectory(String folder) throws IOException;
 
+    public List<Game> addMultipleGames(String dir) throws IOException;
+
     public File[] findFiles(String dirName);
 
     public List<Game> processGames(File[] files) throws IOException;
@@ -22,4 +24,8 @@ public interface GCMService {
     public List<Game> getAllGames();
 
     public int addGameList(List<Game> games) throws Exception;
+
+    public String removeGame(Game game);
+
+    public String removeMultipleGames(List<Game> games);
 }

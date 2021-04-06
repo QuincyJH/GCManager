@@ -26,6 +26,16 @@ public class GCMServiceImpl implements GCMService{
         return dir;
     }
 
+    public List<Game> addMultipleGames(String dir) throws IOException {
+        System.out.println("hello");
+        List<Game> games = this.processGames(this.findFiles(dir));
+        for (Game game : games){
+            gameDAO.addNewGame(game);
+        }
+        //return gameDAO.addMultipleGames(this.processGames(this.findFiles(dir)));
+        return gameDAO.getAllGames();
+    }
+
     public File[] findFiles(String dirName){
         File directory = new File(dirName);
         return directory.listFiles(new FilenameFilter(){
@@ -47,8 +57,6 @@ public class GCMServiceImpl implements GCMService{
             Game game = new Game(files[i].getName(), idName.substring(0,6), idName.substring(32).trim());
             games.add(game);
             is.close();
-
-
         }
         return games;
     }
@@ -79,4 +87,11 @@ public class GCMServiceImpl implements GCMService{
         return gameDAO.getAllGames();
     }
 
+    public String removeGame(Game game){
+        return gameDAO.removeGame(game);
+    }
+
+    public String removeMultipleGames(List<Game> games){
+        return gameDAO.removeMultipleGames(games);
+    }
 }
